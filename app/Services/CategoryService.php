@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\CustomNotFoundException;
 use App\Models\Category;
 use Faker\Test\Provider\Collection;
 use Illuminate\Support\Facades\DB;
@@ -78,8 +79,12 @@ class CategoryService
    * @param Category $category
    * @return bool
    */
-  public function delete(Category $category): bool
+  public function delete($categoryId): bool
   {
+
+    $category = Category::findOr($categoryId, function () use ($categoryId) {
+      throw new CustomNotFoundException("Category with ID {$categoryId} was not found.", 404);
+    });
     return DB::transaction(function () use ($category) {
       // Delete image if exists
       if ($category->image) {

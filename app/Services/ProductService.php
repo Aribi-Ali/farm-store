@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\CustomException;
+use App\Exceptions\CustomNotFoundException;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -75,9 +76,13 @@ class ProductService
     // Handle image upload if present
     $this->handleImageUpload($product, $images);
   }
-  public function delete(Product $product)
+  public function delete($productId)
   {
 
+
+    $product = Product::findOr($productId, function () use ($productId) {
+      throw new CustomNotFoundException("Product with ID {$productId} was not found.", 404);
+    });
     return DB::transaction(function () use ($product) {
       // Delete image if exists
       $product->load('images');
@@ -93,6 +98,7 @@ class ProductService
   public function getPaginated(array $filters, int $per_page = 15)
   {
 
+    // throw new CustomException("ya 3abita!", 404s);
     $product = Product::query();
     if (!empty($filters["search"])) {
       $product->where("name", "like", "%" . $filters["search"] . "%")

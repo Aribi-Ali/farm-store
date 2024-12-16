@@ -63,10 +63,9 @@ class ProductController extends Controller
         return Response::json(new ProductResource($updatedProduct));
     }
 
-    public function delete(Product $product)
+    public function delete($id)
     {
-        $this->productService->delete($product);
+        $this->productService->delete($id);
         return Response::json(null, 204);
-
     }
 }

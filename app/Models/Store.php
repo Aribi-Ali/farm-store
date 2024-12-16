@@ -6,7 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-    protected $fillable = ["name", "slug"];
+    protected $fillable = [
+        "name",
+        "slug",
+        "email",
+        "logo",
+        "phone_number",
+        "address",
+        "description",
+        "is_active",
+        "is_featured",
+        "opening_hours"
+    ];
     public function users()
     {
         return $this->belongsToMany(User::class, 'store_user_roles');

@@ -1,7 +1,6 @@
 <?php
 
 use App\Exceptions\CustomException;
-use App\Exceptions\CustomNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,17 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (CustomException $e, Request $request) {
             //dd($e.getMessage());
-            return response()->json([
-                'error' => 'Resource not found',
-                "message" => $e->getMessage(),
-                "code" => $e->getCode()
-            ]);
+            return response()->json(["message" => $e->getMessage(), "code" => $e->getCode()]);
         });
 
-        $exceptions->render(function (CustomNotFoundException $e, Request $request) {
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
             return response()->json([
                 'error' => 'Resource not found',
-                'message' => $e->getMessage(),
+                'message' => $request->route("id"),
                 'code' => 404,
             ], 404);
         });

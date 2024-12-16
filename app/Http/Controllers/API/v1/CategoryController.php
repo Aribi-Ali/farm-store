@@ -82,7 +82,7 @@ class CategoryController extends Controller
     /**
      * Update the specified category
      */
-    public function update(CategoryUpdateRequest $request, Category $category) : JsonResponse
+    public function update(CategoryUpdateRequest $request, Category $category): JsonResponse
     {
         // dd($request);
         $updatedCategory = $this->categoryService->update(
@@ -97,9 +97,9 @@ class CategoryController extends Controller
     /**
      * Remove the specified category
      */
-    public function destroy(Category $category): JsonResponse
+    public function destroy($id): JsonResponse
     {
-        $this->categoryService->delete($category);
+        $this->categoryService->delete($id);
 
         return Response::json(null, 204);
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -11,14 +12,22 @@ Route::get('categories/list', [CategoryController::class, 'getAllCategories']);
 Route::get('categories/{category}', [CategoryController::class, 'show']);
 Route::post('categories', [CategoryController::class, 'store']);
 Route::put('categories/{category}', [CategoryController::class, 'update']);
-Route::delete('categories/{category}', [CategoryController::class, 'delete']);
+Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
 
 Route::get('products', [ProductController::class, 'index']);
 Route::post('products', [ProductController::class, 'store']);
 Route::get('products/{product}', [ProductController::class, 'show']);
 Route::put('products/{product}', [ProductController::class, 'update']);
-Route::delete('products/{product}', [ProductController::class, 'delete']);
+Route::delete('products/{id}', [ProductController::class, 'delete']);
 
+
+//stores
+Route::post('stores', [StoreController::class, 'store']);
+Route::get('stores', [StoreController::class, 'index']);
+Route::delete('stores/{id}', [StoreController::class, 'destroy']);
+Route::get('stores/{id}', [StoreController::class, 'getStoreById'])->where('id', '[0-9]+');
+Route::get('stores/{slug}', [StoreController::class, 'getStoreBySlug'])->where('slug', '[a-zA-Z0-9-_]+');
+Route::put('stores/{id}', [StoreController::class, 'update']);
 
 
 

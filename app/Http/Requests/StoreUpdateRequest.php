@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ProductStoreRequest extends FormRequest
+class StoreUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,19 +23,16 @@ class ProductStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'SKU' => 'required|string|unique:products,SKU',
             'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'slug' => ['required', 'string', 'max:255', Rule::unique('stores')->ignore($this->id)],
+            'email' => 'nullable|email|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'newPrice' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'category_id' => 'required|exists:categories,id',
-            // 'images' => 'required|array|min:1',
-            // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'opening_hours' => 'nullable|json',
             'is_active' => 'boolean',
-            'store_id' => 'required|exists:stores,id',
-            'created_by' => 'nullable|exists:users,id',
-            'updated_by' => 'nullable|exists:users,id',
+            'is_featured' => 'boolean',
         ];
     }
 }
