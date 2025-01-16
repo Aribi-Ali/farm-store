@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidCategoryAttribute;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductUpdateRequest extends FormRequest
@@ -21,7 +22,10 @@ class ProductUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        // adding update request rules
+
         return [
+            // here we are adding the update request rules
             'SKU' => 'required|string|unique:products,SKU,' . $this->id,
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -29,12 +33,26 @@ class ProductUpdateRequest extends FormRequest
             'newPrice' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
-            'is_active' => 'boolean',
+            'isActive' => 'boolean',
             'store_id' => 'required|exists:stores,id',
-            'created_by' => 'nullable|exists:users,id',
-            'updated_by' => 'nullable|exists:users,id',
-            'images' => 'nullable|array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'hasCustomShipping' => 'boolean',
+            'homeCustomShipping_cost' => 'nullable|numeric|min:0',
+            'stopDeskCustomShipping_cost' => 'nullable|numeric|min:0',
+            'freeShipping' => 'boolean',
+            'specialPrice' => 'nullable|numeric|min:0',
+            'specialPriceStartDate' => 'required_if:specialPrice,!=,null|date',
+            'specialPriceEndDate' => 'required_if:specialPrice,!=,null|date',
+            'metadata' => 'nullable|json',
+            'tags' => 'nullable|array|exists:tags,id',
+            'brand' => 'nullable|exists:brands,id',
+            'attributes.*.id' => [
+                'required',
+                'exists:attributes,id',
+                new ValidCategoryAttribute($this->category_id),
+            ],
+            'options' => ['nullable', 'array'], // Optional options
+            'options.*' => ['exists:attribute_options,id'],
+
         ];
     }
 }

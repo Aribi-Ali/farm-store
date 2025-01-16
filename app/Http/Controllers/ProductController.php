@@ -22,8 +22,9 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-
-        $products = $this->productService->getPaginated($request->all());
+ 
+        // return $request->query("per_page");
+        $products = $this->productService->getPaginated($request->all(), $request->query("per_page"));
         return Response::json([
             'data' => ProductResource::collection($products),
             'meta' => [
@@ -50,22 +51,24 @@ class ProductController extends Controller
 
 
 
-    public function show(Product $product): JsonResponse
+    public function show($productId): JsonResponse
     {
-        $product->load('images',);
+
+        $product = $this->productService->show($productId);
+
         return Response::json(new ProductResource($product));
     }
 
-    public function update(ProductUpdateRequest $request, Product $product)
+    public function update(ProductUpdateRequest $request, $productId)
     {
 
-        $updatedProduct = $this->productService->update($product, $request->all(), $request->file("images", []));
+        $updatedProduct = $this->productService->update($productId, $request->all(), $request->file("images", []));
         return Response::json(new ProductResource($updatedProduct));
     }
 
-    public function delete($id)
+    public function delete($productId)
     {
-        $this->productService->delete($id);
+        $this->productService->delete($productId);
         return Response::json(null, 204);
     }
 }

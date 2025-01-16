@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();  // Unique identifier for each badge
             $table->string('name');  // Badge name
             $table->text('description')->nullable();  // Optional description of the badge
+            $table->string("path");
             $table->timestamps();  // Created and updated timestamps
         });
     }

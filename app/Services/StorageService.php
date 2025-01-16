@@ -67,7 +67,7 @@ class StorageService
         return false;
     }
 
-    private function deleteSingleImage($driver, $disk, string $folder, string $image): bool
+    public  function deleteSingleImage($driver, $disk, string $folder, string $image): bool
     {
         $disk = Storage::disk($driver);
 

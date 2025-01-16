@@ -26,7 +26,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $categories = $this->categoryService->getPaginated($request->all());
+        $categories = $this->categoryService->getPaginated($request->all(), $request->query("per_page"));
 
         return Response::json([
             'data' => CategoryResource::collection($categories),
@@ -60,7 +60,7 @@ class CategoryController extends Controller
 
 
         $category = $this->categoryService->create(
-            $request->validated(),
+            $request->valpated(),
             $request->file('image')
         );
 
@@ -73,20 +73,20 @@ class CategoryController extends Controller
     /**
      * Display the specified category
      */
-    public function show(Category $category): JsonResponse
+    public function show($categoryId): JsonResponse
     {
-        $category->load('parent', 'children');
+        $category = $this->categoryService->show($categoryId);
         return Response::json(new CategoryResource($category));
     }
 
     /**
      * Update the specified category
      */
-    public function update(CategoryUpdateRequest $request, Category $category): JsonResponse
+    public function update(CategoryUpdateRequest $request,  $categoryId): JsonResponse
     {
         // dd($request);
         $updatedCategory = $this->categoryService->update(
-            $category,
+            $categoryId,
             $request->validated(),
             $request->file('image')
         );
@@ -97,9 +97,9 @@ class CategoryController extends Controller
     /**
      * Remove the specified category
      */
-    public function destroy($id): JsonResponse
+    public function destroy($categoryId): JsonResponse
     {
-        $this->categoryService->delete($id);
+        $this->categoryService->delete($categoryId);
 
         return Response::json(null, 204);
     }

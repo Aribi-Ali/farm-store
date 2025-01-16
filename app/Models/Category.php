@@ -50,4 +50,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class, 'category_product');
     }
+
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class);
+    }
 }

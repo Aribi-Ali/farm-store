@@ -19,8 +19,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'avatar', 'firstName', 'lastName', 'date_of_birth', 'password',
-        'userName', 'phone_number', 'email', 'is_active', 'email_verified_at'
+        'avatar',
+        'firstName',
+        'lastName',
+        'date_of_birth',
+        'password',
+        'userName',
+        'phone_number',
+        'email',
+        'is_active',
+        'email_verified_at'
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -86,7 +94,7 @@ class User extends Authenticatable
     }
 
 
-// badges relation
+    // badges relation
     public function badges()
     {
         return $this->belongsToMany(Badge::class, 'user_badges')
@@ -94,7 +102,10 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function userDetail(){
-        return $this->hasOne(User::class);
-    }
+    // public function userDetail()
+    // {
+    //     return $this->hasOne(User::class);
+    // }
+
+
 }

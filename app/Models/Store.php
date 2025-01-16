@@ -28,4 +28,16 @@ class Store extends Model
     {
         return $this->belongsToMany(Role::class, 'store_user_roles');
     }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+    public function shippings()
+    {
+        return $this->hasMany(Shipping::class);
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

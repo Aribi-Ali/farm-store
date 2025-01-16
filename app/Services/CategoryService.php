@@ -10,6 +10,7 @@ use Illuminate\Http\UploadedFile;
 
 class CategoryService
 {
+  const DEFAULT_PER_PAGE = 15;
   protected $storageService;
 
   public function __construct(StorageService $storageService)
@@ -48,8 +49,15 @@ class CategoryService
    * @param UploadedFile|null $image
    * @return Category
    */
-  public function update(Category $category, array $data, ?UploadedFile $image = null): Category
+  public function update($categoryId, array $data, ?UploadedFile $image = null): Category
   {
+
+    $category = Category::findOr($categoryId, function () use ($categoryId) {
+      throw new CustomNotFoundException("Category with ID {$categoryId} was not found.", 404);
+    });
+
+
+
     return DB::transaction(function () use ($category, $data, $image) {
       // Handle image upload if present
 
@@ -88,7 +96,7 @@ class CategoryService
     return DB::transaction(function () use ($category) {
       // Delete image if exists
       if ($category->image) {
-        $this->storageService->deleteImage("local_image_driver", "categories", $category->image);
+        $this->storageService->deleteSingleImage("local_image_driver", null, "categories", $category->image);
       }
 
       // Delete category
@@ -103,7 +111,7 @@ class CategoryService
    * @param int $perPage
    * @return \Illuminate\Pagination\LengthAwarePaginator
    */
-  public function getPaginated(array $filters = [], int $perPage = 15)
+  public function getPaginated(array $filters = [], int|null $perPage = self::DEFAULT_PER_PAGE)
   {
     $query = Category::query();
 
@@ -122,7 +130,7 @@ class CategoryService
   }
 
 
-  public function getAllCategories(array $filters, int $perPage = 15)
+  public function getAllCategories(array $filters, int $perPage = self::DEFAULT_PER_PAGE)
   {
     // dd($filters);
     $query = Category::query();
@@ -133,24 +141,14 @@ class CategoryService
 
 
     return $query->paginate($perPage);
-    // return $query->with('allChildren')->paginate($perPage);
   }
 
-  /* public function getPaginated(array $filters = [], int $perPage = 15)
+  public function show($categoryId)
   {
-    $query = Category::query();
 
-    // Apply filters
-    if (!empty($filters['search'])) {
-      $query->where('name', 'like', '%' . $filters['search'] . '%');
-    }
-
-    if (!empty($filters['parent_id'])) {
-      $query->where('parent_id', $filters['parent_id']);
-    }
-
-    // Eager load parent relationship
-    return $query->with('children')->paginate($perPage);
+    $category = Category::findOr($categoryId, function () use ($categoryId) {
+      throw new CustomNotFoundException("Category with ID {$categoryId} was not found.", 404);
+    });
+    return     $category->load('parent', 'children');
   }
-*/
 }

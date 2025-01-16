@@ -23,7 +23,7 @@ class Product extends Model
         "updated_by",
         "newPrice",
         "SKU",
-        "is_active"
+        "isActive"
     ];
     // generate SKU if is null
     public function setSKUAttribute($value)
@@ -33,6 +33,8 @@ class Product extends Model
         }
     }
 
+
+
     // Many-to-Many with Category
     public function categories()
     {
@@ -40,8 +42,55 @@ class Product extends Model
     }
 
 
-    public function images()
+    // public function images()
+    // {
+    //     return $this->morphMany(Image::class, 'imageable');
+    // }
+
+    public function attributes()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->belongsToMany(Attribute::class, 'product_attributes')->withPivot('attribute_option_id')->withTimestamps();
+    }
+
+    // add all scopes
+    public function scopeActive($query)
+    {
+        return $query->where('isActive', true);
+    }
+
+    public function scopeInStock($query)
+    {
+        return $query->where('stock', '>', 0);
+    }
+    public function scopeFeatured($query)
+    {
+        return $query->where('isFeatured', true);
+    }
+    public function scopeNotFeatured($query)
+    {
+        return $query->where('isFeatured', false);
+    }
+    public
+    function scopeHasCustomShipping($query)
+    {
+        return $query->where('hasCustomShipping', true);
+    }
+    public
+    function scopeFreeShipping($query)
+    {
+        return $query->where('freeShipping', true);
+    }
+    public function scopePriceRange($query, $min, $max)
+    {
+        return $query->whereBetween('price', [$min, $max]);
+    }
+    public
+    function scopeNewPriceRange($query, $min, $max)
+    {
+        return $query->whereBetween('newPrice', [$min, $max]);
+    }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, "product_tags");
     }
 }

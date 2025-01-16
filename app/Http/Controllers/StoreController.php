@@ -27,7 +27,7 @@ class StoreController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $stores = $this->storeService->getPaginated($request->all());
+        $stores = $this->storeService->getPaginated($request->all(), $request->query("per_page"));
 
         return Response::json([
             'data' => StoreResource::collection($stores),
@@ -44,7 +44,7 @@ class StoreController extends Controller
     {
 
 
-        $store = $this->storeService->create($request->all(), $request->file("logo"));
+        $store = $this->storeService->create($request->validated(), $request->file("logo"));
         return
             response()->json(new StoreResource($store), 201);
     }
@@ -53,11 +53,11 @@ class StoreController extends Controller
     /**
      * Update the specified category
      */
-    public function update(StoreUpdateRequest $request, $id): JsonResponse
+    public function update(StoreUpdateRequest $request, $storeId): JsonResponse
     {
         // dd($request);
         $updatedStore = $this->storeService->update(
-            $id,
+            $storeId,
             $request->validated(),
             $request->file('logo')
         );
@@ -65,22 +65,22 @@ class StoreController extends Controller
         return Response::json(new StoreResource($updatedStore));
     }
 
-    public function getStoreById($id)
+    public function getStoreById($storeId)
     {
-        return $this->storeService->getStoreById($id);
+        return $this->storeService->getStoreById($storeId);
     }
 
-    public function getStoreBySlug($id)
+    public function getStoreBySlug($storeId)
     {
-        return $this->storeService->getStoreBySlug($id);
+        return $this->storeService->getStoreBySlug($storeId);
     }
 
     /**
      * Remove the specified category
      */
-    public function destroy($id): JsonResponse
+    public function destroy($storeId): JsonResponse
     {
-        $this->storeService->delete($id);
+        $this->storeService->delete($storeId);
 
         return Response::json(null, 204);
     }

@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StoreService
 {
+  const DEFAULT_PER_PAGE = 15;
+
   protected $storageService;
 
   public function __construct(StorageService $storageService)
@@ -108,7 +110,7 @@ class StoreService
    * @param int $perPage
    * @return \Illuminate\Pagination\LengthAwarePaginator
    */
-  public function getPaginated(array $filters = [], int $perPage = 15)
+  public function getPaginated(array $filters = [], int|null $perPage = self::DEFAULT_PER_PAGE)
   {
     $query = Store::query();
 

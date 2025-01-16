@@ -15,14 +15,16 @@ class AuthenticationController extends Controller
     /**
      * Register a new user
      */
+
     public function register(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8|confirmed',
         ]);
+
 
         $user = User::create([
             'firstName' => $request->firstName,
@@ -30,17 +32,21 @@ class AuthenticationController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
+        // Create a token for API authentication
+        $token = $user->createToken('api_token')->plainTextToken;
 
-        $token = $user->createToken('Personal Access Token')->accessToken;
-
-            // send otp and redirect to verification page
-                // can't navigate until the account is verified
-
-        return response()->json([
-            'user' => $user,
-            'access_token' => $token
-        ], 201);
+        return response()->json(['user' => $user, 'token' => $token]);
     }
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Authenticate user and generate token
@@ -88,8 +94,4 @@ class AuthenticationController extends Controller
             'message' => 'Successfully logged out'
         ]);
     }
-
-
-
-
 }

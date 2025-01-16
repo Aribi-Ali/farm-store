@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');  // Foreign key to users table
             $table->foreignId('badge_id')->constrained()->onDelete('cascade');  // Foreign key to badges table
             $table->timestamp('earned_at');  // Date when the badge was earned
-            $table->timestamps();  // Created and updated timestamps
+            // $table->timestamps();  // Created and updated timestamps
         });
     }
 

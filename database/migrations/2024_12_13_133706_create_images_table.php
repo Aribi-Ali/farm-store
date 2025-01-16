@@ -13,9 +13,27 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('url');
-            $table->morphs('imageable');
+
+            // Foreign Keys
+            $table->foreignId('product_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->comment('Associated product ID');
+
+            // Attributes
+            $table->unsignedInteger('priority')
+                ->default(0)
+                ->comment('Priority for image display order (lower means higher priority)');
+
+
+
+            
+
+            // Timestamps
             $table->timestamps();
+
+            // Indexes
+            $table->index(['product_id', 'priority'], 'product_priority_index');
         });
     }
 

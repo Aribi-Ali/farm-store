@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->boolean("isActive")->default(true);
-            //$table->unsignedBigInteger('parent_id')->nullable();; // Use parent_id instead
 
 
 
@@ -26,7 +25,7 @@ return new class extends Migration
             $table->foreignId('parent_id')->nullable()->constrained('categories')->onDelete('cascade');
             $table->timestamps();
 
-            $table->integer('order')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->json('metadata')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
